@@ -9,7 +9,7 @@ jobs:
         steps:
             - name: Install and Build
               run: |
-                  npm run install
+                  npm install
                   npm run build
               env:
                   REACT_APP_APIKEY: ${{ secrets.REACT_APP_APIKEY }}
