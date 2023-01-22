@@ -40,11 +40,7 @@ const SelectField = ({
                 {optionsArray &&
                     optionsArray.map((option) => {
                         return value && value === option.value ? (
-                            <option
-                                key={option.value}
-                                value={option.value}
-                                checked
-                            >
+                            <option key={option.value} value={option.value}>
                                 {option.label}
                             </option>
                         ) : (
