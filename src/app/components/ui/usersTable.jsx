@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Bookmark from "../common/bookmark";
+// import Bookmark from "../common/bookmark";
 import Qualities from "./qualities";
 import Table, { TableHeader, TableBody } from "../common/table";
 import Profession from "./profession";
@@ -26,17 +26,17 @@ const UsersTable = ({
             path: "completedMeetings",
             name: "Встретился раз"
         },
-        rate: { path: "rate", name: "Оценка" },
-        bookmark: {
-            path: "bookmark",
-            name: "Избранное",
-            component: (user) => (
-                <Bookmark
-                    status={user.bookmark}
-                    onClick={() => onToggleBookMark(user._id)}
-                />
-            )
-        }
+        rate: { path: "rate", name: "Оценка" }
+        // bookmark: {
+        //     path: "bookmark",
+        //     name: "Избранное",
+        //     component: (user) => (
+        //         <Bookmark
+        //             status={user.bookmark}
+        //             onClick={() => onToggleBookMark(user._id)}
+        //         />
+        //     )
+        // }
     };
     return (
         <Table
