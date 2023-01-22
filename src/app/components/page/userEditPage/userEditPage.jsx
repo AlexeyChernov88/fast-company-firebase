@@ -13,16 +13,12 @@ import { useAuth } from "../../../hooks/useAuth";
 
 const UserEditPage = ({ userId }) => {
     const history = useHistory();
-    const { currentUser, updateUser } = useAuth();
+    const { currentUser, updateUserData } = useAuth();
     const { isLoading: isLoadingProfession, professions } = useProfession();
     const { qualities, isLoading: isLoadingQuality, getQuality } = useQuality();
     const [dataUser, setDataUser] = useState();
     const [errors, setErrors] = useState({});
     const [isLoadingPage, setIsLoading] = useState(true);
-
-    // const getQualities = (qualities) => {
-    //     return qualities.map((q) => q.value);
-    // };
 
     const professionList = professions.map((prof) => ({
         label: prof.name,
@@ -103,7 +99,7 @@ const UserEditPage = ({ userId }) => {
         const isValid = validate();
         if (!isValid) return;
         try {
-            await updateUser({
+            await updateUserData({
                 ...dataUser,
                 qualities: dataUser.qualities.map((q) => q.value)
             });

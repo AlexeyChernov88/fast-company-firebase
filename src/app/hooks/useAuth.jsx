@@ -1,8 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { toast } from "react-toastify";
 import axios from "axios";
 import userService from "../services/user.service";
-import { toast } from "react-toastify";
 import localStoradgeService, {
     setTokens
 } from "../services/localStoradge.service";
@@ -38,6 +38,7 @@ const AuthProvider = ({ children }) => {
             );
             setTokens(data);
             await getUserData();
+            history.push("/users");
         } catch (error) {
             errorCatcher(error);
             const { code, message } = error.response.data.error;
@@ -46,6 +47,7 @@ const AuthProvider = ({ children }) => {
                 switch (message) {
                     case "INVALID_PASSWORD":
                         throw new Error("Email или пароль введены некорректно");
+
                     default:
                         throw new Error(
                             "Слишком много попыток входа. Попробуйте позже"
@@ -54,10 +56,22 @@ const AuthProvider = ({ children }) => {
             }
         }
     }
+    function logOut() {
+        localStoradgeService.removeAuthData();
+        setUser(null);
+        history.push("/");
+    }
     function randomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1) + min);
     }
-
+    async function updateUserData(data) {
+        try {
+            const { content } = await userService.update(data);
+            setUser(content);
+        } catch (error) {
+            errorCatcher(error);
+        }
+    }
     async function signUp({ email, password, ...rest }) {
         try {
             const { data } = await httpAuth.post(`accounts:signUp`, {
@@ -78,6 +92,7 @@ const AuthProvider = ({ children }) => {
                     .substring(7)}.svg`,
                 ...rest
             });
+            history.push("/users");
         } catch (error) {
             errorCatcher(error);
             const { code, message } = error.response.data.error;
@@ -90,10 +105,8 @@ const AuthProvider = ({ children }) => {
                     throw errorObject;
                 }
             }
-            // throw new Error
         }
     }
-
     async function createUser(data) {
         try {
             const { content } = await userService.create(data);
@@ -111,26 +124,11 @@ const AuthProvider = ({ children }) => {
         try {
             const { content } = await userService.getCurrentUser();
             setUser(content);
-        } catch {
+        } catch (error) {
             errorCatcher(error);
         } finally {
             setLoading(false);
         }
-    }
-    async function updateUser(data) {
-        try {
-            const { content } = await userService.update(data);
-            setUser(content);
-        } catch {
-            errorCatcher(error);
-        } finally {
-            setLoading(false);
-        }
-    }
-    function logOut() {
-        localStoradgeService.removeAuthData();
-        setUser(null);
-        history.push("/");
     }
     useEffect(() => {
         if (localStoradgeService.getAccessToken()) {
@@ -147,7 +145,7 @@ const AuthProvider = ({ children }) => {
     }, [error]);
     return (
         <AuthContext.Provider
-            value={{ signUp, logIn, logOut, currentUser, updateUser }}
+            value={{ signUp, logIn, currentUser, logOut, updateUserData }}
         >
             {!isLoading ? children : "Loading..."}
         </AuthContext.Provider>
